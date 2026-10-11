@@ -1,0 +1,147 @@
+server:
+  allow-all-cors:
+    enable: ${ALLOW_ALL_CORS}
+  ssl:
+    enabled: ${SSL_ENABLE}
+    key-store: ${STORE_PATH}
+    key-store-password: ${STORE_PASSWORD}
+    keyStoreType: PKCS12
+    keyAlias: ${KEY_ALIAS}
+  port: ${PORT}
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-exception: false
+    include-stacktrace: never
+
+spring:
+  swagger-server-url: ${SWAGGER_URL}
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: ${PROFILE}
+  kafka:
+    common:
+      ssl:
+        enabled: ${KAFKA_SSL_ENABLE:true}
+        protocol: ${KAFKA_SECURITY_PROTOCOL}
+        trust-store-location: ${KAFKA_TRUST_STORE_LOCATION}
+        trust-store-password: ${KAFKA_TRUST_STORE_PASSWORD}
+        key-store-location: ${KAFKA_KEY_STORE_LOCATION}
+        key-store-password: ${KAFKA_KEY_STORE_PASSWORD}
+        key-store-type: ${KAFKA_KEY_STORE_TYPE}
+        trust-store-type: ${KAFKA_TRUST_STORE_TYPE}
+
+    pim:
+      bootstrap-servers: ${BOOTSTRAP_SERVERS_PIM}
+      producer:
+        transaction-id-prefix: ${KAFKA_TRANSACTION_PREFIX}
+      consumer:
+        group-id: ${GROUP_ID_PIM}
+        auto-offset-reset: earliest
+      send-topic: ${SEND_TOPIC:graph_gsz_groups}
+      get-topic: ${GET_TOPIC:gsz_graph_groups}
+      chuck_bytes_size: ${CHUNK_BYTES_SIZE:1000000}
+
+    mirion:
+      bootstrap-servers: ${BOOTSTRAP_SERVERS_MIRION}
+      producer:
+        transaction-id-prefix: ${KAFKA_TRANSACTION_PREFIX}
+      consumer:
+        group-id: ${GROUP_ID}
+        auto-offset-reset: earliest
+      result-topic: ${ASYNC_RESULT_TOPIC}
+  application:
+    name: ${APPLICATION_NAME:integration-testing-service}
+  datasource:
+    hikari:
+      connection-timeout: ${DATABASE_TIMEOUT}
+      maximum-pool-size: ${DATABASE_MAX_CONNECTIONS}
+    driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  liquibase:
+    change-log: classpath:db/changelog-master.yaml
+
+arangodb:
+  hosts: ${ARANGO_HOSTS}
+  timeout: ${ARANGO_TIMEOUT}
+  user: ${ARANGO_USER}
+  password: ${ARANGO_PASSWORD}
+  maxConnections: ${ARANGO_MAX_CONNECTIONS}
+  database: ${ARANGO_DATABASE}
+  useSsl: ${ARANGO_SSL_ENABLE}
+  trustStoreLocation: ${TRUST_STORE_PATH}
+  trustStorePassword: ${TRUST_STORE_PASSWORD}
+  query:
+    limit: 100
+  batch:
+    size: 1000
+
+scheduler:
+  sendToGsz:
+    cron: ${SEND_TO_GSZ_CRON:0 0 1 * * *}
+    enabled: ${SEND_TO_GSZ_ENABLED:true}
+    delay: ${SEND_TO_GSZ_DELAY_MINUTES:5}
+
+jasypt:
+  encryptor:
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    algorithm: PBEWithMD5AndDES
+    password: ${JASYPT_ENCRYPTOR_PASSWORD}
+
+springdoc:
+  swagger-ui:
+    path: "/swagger"
+    csrf:
+      enabled: true
+
+build:
+  id: ${BUILD_ID}
+  branch: ${BUILD_BRANCH}
+  date: ${BUILD_DATE}
+
+logging:
+  level:
+    root: WARN
+    com.innotech: INFO
+    ru.innotech: INFO
+  format:
+    json:
+      enabled: ${KIBANA_ENABLED}
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ${ACTUATOR_ENDPOINTS:prometheus,health,loggers}
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  tracing:
+    enabled: ${TRACING_ENABLED:true}
+    sampling:
+      probability: ${TRACING_SAMPLING:0.1}
+  otlp:
+    tracing:
+      export:
+        enabled: ${TRACING_ENABLED:false}
+      endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:}
+
+jwt:
+  validation:
+    enabled: ${JWT_VALIDATION_ENABLED:false}
+
+async-service:
+  url: ${URL_ASYNC_SERVICE}

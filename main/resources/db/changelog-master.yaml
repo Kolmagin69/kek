@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - include:
+      file: 2026/001-create-send-load-test-msg.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 2026/002-create-get-load-test-msg.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 2026/003-create-load-test-history.sql
+      relativeToChangelogFile: true
